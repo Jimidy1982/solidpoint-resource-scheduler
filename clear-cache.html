@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clear Cache - SolidPoint Resource Organiser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #6c3fc5;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            background: #6c3fc5;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #5a2fa0;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #6c3fc5;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Cache Clear Helper</h1>
+        
+        <div class="instructions">
+            <h3>If your browser is loading slowly or not showing the latest changes:</h3>
+            <ol>
+                <li><strong>Hard Refresh:</strong> Press <code>Ctrl + F5</code> (Windows) or <code>Cmd + Shift + R</code> (Mac)</li>
+                <li><strong>Clear Browser Cache:</strong> Press <code>Ctrl + Shift + Delete</code> and clear cached files</li>
+                <li><strong>Use Incognito/Private Mode:</strong> Open the app in a private browsing window</li>
+            </ol>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Note:</strong> The main app now has cache-busting parameters added to force fresh loading of CSS and JavaScript files.
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="button">🚀 Go to Main App</a>
+            <a href="index.html?v=<?php echo time(); ?>" class="button">🔄 Force Fresh Load</a>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #666; font-size: 0.9em;">
+            <p>Last updated: January 20, 2025</p>
+            <p>Cache version: v20250120</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-redirect to main app after 3 seconds
+        setTimeout(() => {
+            window.location.href = 'index.html?v=' + Date.now();
+        }, 3000);
+    </script>
+</body>
+</html> 
