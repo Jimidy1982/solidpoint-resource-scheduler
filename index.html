@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>SolidPoint Resource Organiser</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/main.css?v=20250120">
+    <link rel="stylesheet" href="css/components.css?v=20250120">
 </head>
 <body>
     <!-- Login Form -->
@@ -31,7 +34,12 @@
                 </div>
                 <div class="form-group">
                     <label for="signinPassword">Password</label>
-                    <input type="password" id="signinPassword" required>
+                    <div class="password-input-container">
+                        <input type="password" id="signinPassword" required>
+                        <button type="button" class="password-toggle-btn" id="toggleSigninPassword" title="Show/Hide Password">
+                            <span class="password-icon">Show</span>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="login-btn">Sign In</button>
                 <div id="signinError" class="error-message"></div>
@@ -49,7 +57,12 @@
                 </div>
                 <div class="form-group">
                     <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" required minlength="6">
+                    <div class="password-input-container">
+                        <input type="password" id="signupPassword" required minlength="6">
+                        <button type="button" class="password-toggle-btn" id="toggleSignupPassword" title="Show/Hide Password">
+                            <span class="password-icon">Show</span>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="login-btn">Sign Up</button>
                 <div id="signupError" class="error-message"></div>
@@ -61,7 +74,26 @@
     <div id="mainApp" style="display: none;">
         <header>
             <h1>SolidPoint Resource Organiser</h1>
-            <div class="user-info">
+            <div class="header-controls">
+                <div class="schedule-selector">
+                    <button class="schedule-dropdown-trigger" id="scheduleDropdownTrigger">
+                        <span class="schedule-icon">&#128197;</span>
+                        <span id="currentScheduleName">My Schedule</span>
+                        <span class="dropdown-arrow">&#9662;</span>
+                    </button>
+                    <div class="schedule-dropdown" id="scheduleDropdown">
+                        <div class="schedule-dropdown-header">
+                            <h3>My Schedules</h3>
+                            <button class="new-schedule-btn" id="newScheduleBtn">+ New</button>
+                        </div>
+                        <div class="schedule-list" id="scheduleList">
+                            <!-- Schedules will be loaded here -->
+                        </div>
+                        <div class="schedule-dropdown-footer">
+                            <button class="duplicate-schedule-btn" id="duplicateScheduleBtn">Duplicate Current</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="user-menu-container">
                     <div class="user-menu-trigger" id="userMenuTrigger">
                         <span id="userDisplayName"></span>
@@ -82,19 +114,23 @@
                         <div class="user-menu-divider"></div>
                         <div class="user-menu-actions">
                             <button class="user-menu-btn" id="profileBtn">
-                                <span class="menu-icon">👤</span>
+                                <span class="menu-icon">&#128100;</span>
                                 Profile Settings
                             </button>
+                            <button class="user-menu-btn admin-only" id="userManagementBtn" style="display: none;">
+                                <span class="menu-icon">&#128101;</span>
+                                User Management
+                            </button>
                             <button class="user-menu-btn" id="themeBtn">
-                                <span class="menu-icon">🎨</span>
+                                <span class="menu-icon">&#127912;</span>
                                 Theme Settings
                             </button>
                             <button class="user-menu-btn" id="helpBtn">
-                                <span class="menu-icon">❓</span>
+                                <span class="menu-icon">&#10067;</span>
                                 Help & Support
                             </button>
                             <button class="user-menu-btn" id="aboutBtn">
-                                <span class="menu-icon">ℹ️</span>
+                                <span class="menu-icon">&#8505;</span>
                                 About
                             </button>
                         </div>
@@ -138,35 +174,318 @@
         <main class="timeline-area" id="timelineArea"></main>
     </div>
 
+    <!-- Profile Settings Modal -->
+    <div id="profileModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Profile Settings</h2>
+                <button class="modal-close" id="profileModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="form-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-group">
+                            <label for="profileDisplayName">Display Name</label>
+                            <input type="text" id="profileDisplayName" placeholder="Enter your display name">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEmail">Email Address</label>
+                            <input type="email" id="profileEmail" placeholder="Enter your email" readonly>
+                            <small>Email cannot be changed directly. Contact support if needed.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Security</h3>
+                        <div class="form-group">
+                            <label for="profileCurrentPassword">Current Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="profileCurrentPassword" placeholder="Enter current password">
+                                <button type="button" class="password-toggle-btn" id="toggleCurrentPassword" title="Show/Hide Password">
+                                    <span class="password-icon">Show</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileNewPassword">New Password</label>
+                            <input type="password" id="profileNewPassword" placeholder="Enter new password (min 6 characters)">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileConfirmPassword">Confirm New Password</label>
+                            <input type="password" id="profileConfirmPassword" placeholder="Confirm new password">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Account Preferences</h3>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="profileNotifications">
+                                <span class="checkmark"></span>
+                                Enable email notifications
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="profileAutoSave">
+                                <span class="checkmark"></span>
+                                Auto-save changes (recommended)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="profileCancelBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" id="profileSaveBtn" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Schedule Modal -->
+    <div id="newScheduleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Schedule</h2>
+                <button class="modal-close" id="newScheduleModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newScheduleForm">
+                    <div class="form-group">
+                        <label for="scheduleName">Schedule Name</label>
+                        <input type="text" id="scheduleName" placeholder="Enter schedule name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scheduleDescription">Description (Optional)</label>
+                        <textarea id="scheduleDescription" placeholder="Enter description" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="newScheduleCancelBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Create Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Schedule Modal -->
+    <div id="editScheduleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Schedule</h2>
+                <button class="modal-close" id="editScheduleModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editScheduleForm">
+                    <div class="form-group">
+                        <label for="editScheduleName">Schedule Name</label>
+                        <input type="text" id="editScheduleName" placeholder="Enter schedule name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editScheduleDescription">Description (Optional)</label>
+                        <textarea id="editScheduleDescription" placeholder="Enter description" rows="3"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="editScheduleCancelBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Duplicate Schedule Modal -->
+    <div id="duplicateScheduleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Duplicate Schedule</h2>
+                <button class="modal-close" id="duplicateScheduleModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="duplicateScheduleForm">
+                    <div class="form-group">
+                        <label for="duplicateScheduleName">New Schedule Name</label>
+                        <input type="text" id="duplicateScheduleName" placeholder="Enter new schedule name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duplicateScheduleDescription">Description (Optional)</label>
+                        <textarea id="duplicateScheduleDescription" placeholder="Enter description" rows="3"></textarea>
+                    </div>
+                    <div class="form-section">
+                        <h3>Copy Options</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="copyGroups" checked>
+                                <span class="checkmark"></span>
+                                Copy all groups and resources
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="copyProjects" checked>
+                                <span class="checkmark"></span>
+                                Copy all projects
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="duplicateScheduleCancelBtn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary">Duplicate Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Schedule Modal -->
+    <div id="shareScheduleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Share Schedule</h2>
+                <button class="modal-close" id="shareScheduleModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3>Share with Users</h3>
+                    <div class="share-user-input">
+                        <input type="email" id="shareUserEmail" placeholder="Enter user email">
+                        <select id="sharePermission">
+                            <option value="view">View Only</option>
+                            <option value="edit">Can Edit</option>
+                        </select>
+                        <button type="button" id="addShareUserBtn" class="btn-primary">Add</button>
+                    </div>
+                    <div class="shared-users-list" id="sharedUsersList">
+                        <!-- Shared users will be listed here -->
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="shareScheduleCancelBtn" class="btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div id="userManagementModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Management</h2>
+                <button class="modal-close" id="userManagementModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3>All Users</h3>
+                    <p class="user-management-description">Manage user permissions and access. Only admin users can modify user settings.</p>
+                    <div class="user-list" id="userList">
+                        <!-- Users will be loaded here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="userManagementCancelBtn" class="btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Settings Modal -->
+    <div id="themeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Theme Settings</h2>
+                <button class="modal-close" id="themeModalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3>Quick Theme Presets</h3>
+                    <p class="theme-description">Choose from our pre-designed themes or create your own custom colors.</p>
+                    <div class="theme-presets">
+                        <button type="button" class="preset-btn active" data-preset="solidpoint">
+                            <div class="preset-preview solidpoint"></div>
+                            <span>SolidPoint</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="blue">
+                            <div class="preset-preview blue"></div>
+                            <span>Blue</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="green">
+                            <div class="preset-preview green"></div>
+                            <span>Green</span>
+                        </button>
+                        <button type="button" class="preset-btn" data-preset="dark">
+                            <div class="preset-preview dark"></div>
+                            <span>Dark</span>
+                        </button>
+                        <button type="button" class="preset-btn reset" data-preset="reset">
+                            <div class="preset-preview reset"></div>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="color-palette-section">
+                    <h4>Custom Color Palette</h4>
+                    <p class="palette-description">Click any color to apply it to your theme, or use the + button to add new colors.</p>
+                    <div class="color-palette-grid">
+                        <div class="palette-category">
+                            <label>Primary Colors</label>
+                            <div class="palette-colors" id="themePrimaryPalette"></div>
+                        </div>
+                        <div class="palette-category">
+                            <label>Secondary Colors</label>
+                            <div class="palette-colors" id="themeSecondaryPalette"></div>
+                        </div>
+                        <div class="palette-category">
+                            <label>Text Colors</label>
+                            <div class="palette-colors" id="themeTextPalette"></div>
+                        </div>
+                        <div class="palette-category">
+                            <label>Background Colors</label>
+                            <div class="palette-colors" id="themeBackgroundPalette"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="themeCancelBtn" class="btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <!-- Firebase Config -->
     <script src="firebase-config.js"></script>
 
     <!-- Load utilities first -->
-    <script src="js/utils/dateUtils.js"></script>
-    <script src="js/utils/domUtils.js"></script>
+    <script src="js/utils/dateUtils.js?v=20250120"></script>
+    <script src="js/utils/domUtils.js?v=20250120"></script>
 
     <!-- Load services -->
-    <script src="js/services/StorageService.js"></script>
-    <script src="js/services/CloudStorageService.js"></script>
-    <script src="js/services/AuthService.js"></script>
-    <script src="js/services/ProjectService.js"></script>
-    <script src="js/services/ProjectGroupService.js"></script>
+    <script src="js/services/StorageService.js?v=20250120"></script>
+    <script src="js/services/CloudStorageService.js?v=20250120"></script>
+    <script src="js/services/AuthService.js?v=20250120"></script>
+    <script src="js/services/ProjectService.js?v=20250120"></script>
+    <script src="js/services/ProjectGroupService.js?v=20250120"></script>
 
     <!-- Load components -->
-    <script src="js/components/ProjectDetails.js"></script>
-    <script src="js/components/Timeline.js"></script>
-    <script src="js/components/GroupManager.js"></script>
-    <script src="js/components/DataCleanup.js"></script>
+    <script src="js/components/ProjectDetails.js?v=20250120"></script>
+    <script src="js/components/Timeline.js?v=20250120"></script>
+    <script src="js/components/GroupManager.js?v=20250120"></script>
+    <script src="js/components/DataCleanup.js?v=20250120"></script>
 
     <!-- Load authentication -->
-    <script src="js/auth.js"></script>
+    <script src="js/auth.js?v=20250120"></script>
+
+    <!-- Load schedule management -->
+    <script src="js/scheduleManager.js?v=20250120"></script>
 
     <!-- Load main application -->
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=20250120"></script>
 </body>
 </html> 

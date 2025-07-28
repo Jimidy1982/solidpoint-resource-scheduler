@@ -20,11 +20,25 @@ const AuthService = {
      * Wait for Firebase to be available
      */
     waitForFirebase() {
+        // Add a timeout to prevent infinite waiting
+        if (!this.waitStartTime) {
+            this.waitStartTime = Date.now();
+        }
+        
+        const maxWaitTime = 10000; // 10 seconds
+        const elapsed = Date.now() - this.waitStartTime;
+        
+        if (elapsed > maxWaitTime) {
+            console.error('[AUTH] Firebase failed to load within 10 seconds');
+            alert('Firebase failed to load. Please refresh the page and try again.');
+            return;
+        }
+        
         if (typeof window.auth !== 'undefined' && typeof window.db !== 'undefined') {
             console.log('[AUTH] Firebase is ready, initializing auth...');
             this.initializeAuth();
         } else {
-            console.log('[AUTH] Firebase not ready yet, waiting...');
+            console.log('[AUTH] Firebase not ready yet, waiting... (elapsed: ' + elapsed + 'ms)');
             setTimeout(() => this.waitForFirebase(), 100);
         }
     },
