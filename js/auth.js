@@ -225,7 +225,7 @@ function initAuthUI() {
     AuthService.init();
     
     // Update user info when auth state changes
-    window.auth.onAuthStateChanged(() => {
+    auth.onAuthStateChanged(() => {
         updateUserInfo();
     });
 }
@@ -425,7 +425,7 @@ console.log('[AUTH] AuthService object:', typeof AuthService !== 'undefined' ? '
 // User Management Functions
 function showUserManagement() {
     // Check if user is admin
-    const user = window.auth.currentUser;
+    const user = auth.currentUser;
     if (!user) {
         alert('You must be logged in to access user management.');
         return;

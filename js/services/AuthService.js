@@ -12,45 +12,8 @@ const AuthService = {
     init() {
         console.log('[AUTH] AuthService.init() called');
         
-        // Wait for Firebase to be ready
-        this.waitForFirebase();
-    },
-
-    /**
-     * Wait for Firebase to be available
-     */
-    waitForFirebase() {
-        // Add a timeout to prevent infinite waiting
-        if (!this.waitStartTime) {
-            this.waitStartTime = Date.now();
-        }
-        
-        const maxWaitTime = 10000; // 10 seconds
-        const elapsed = Date.now() - this.waitStartTime;
-        
-        if (elapsed > maxWaitTime) {
-            console.error('[AUTH] Firebase failed to load within 10 seconds');
-            alert('Firebase failed to load. Please refresh the page and try again.');
-            return;
-        }
-        
-        if (typeof window.auth !== 'undefined' && typeof window.db !== 'undefined') {
-            console.log('[AUTH] Firebase is ready, initializing auth...');
-            this.initializeAuth();
-        } else {
-            console.log('[AUTH] Firebase not ready yet, waiting... (elapsed: ' + elapsed + 'ms)');
-            setTimeout(() => this.waitForFirebase(), 100);
-        }
-    },
-
-    /**
-     * Initialize authentication once Firebase is ready
-     */
-    initializeAuth() {
-        console.log('[AUTH] Initializing authentication...');
-        
         // Listen for auth state changes
-        window.auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged((user) => {
             console.log('[AUTH] Auth state changed:', user ? 'User logged in' : 'No user');
             console.log('[AUTH] User details:', user);
             
@@ -71,7 +34,7 @@ const AuthService = {
      */
     async signUp(email, password, displayName) {
         try {
-            const userCredential = await window.auth.createUserWithEmailAndPassword(email, password);
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
             
             // Update display name
@@ -80,7 +43,7 @@ const AuthService = {
             });
 
             // Create user document in Firestore
-            await window.db.collection('users').doc(user.uid).set({
+            await db.collection('users').doc(user.uid).set({
                 email: email,
                 displayName: displayName,
                 role: 'viewer', // Default role
@@ -103,7 +66,7 @@ const AuthService = {
             console.log('AuthService.signIn called with email:', email);
             console.log('Firebase auth object:', window.auth);
             
-            const userCredential = await window.auth.signInWithEmailAndPassword(email, password);
+            const userCredential = await auth.signInWithEmailAndPassword(email, password);
             console.log('Sign in successful, user:', userCredential.user);
             return { success: true, user: userCredential.user };
         } catch (error) {
@@ -117,7 +80,7 @@ const AuthService = {
      */
     async signOut() {
         try {
-            await window.auth.signOut();
+            await auth.signOut();
             return { success: true };
         } catch (error) {
             console.error('Sign out error:', error);
@@ -137,14 +100,14 @@ const AuthService = {
 
         try {
             console.log('[AUTH] Loading user role for:', this.currentUser.uid);
-            const userDoc = await window.db.collection('users').doc(this.currentUser.uid).get();
+            const userDoc = await db.collection('users').doc(this.currentUser.uid).get();
             if (userDoc.exists) {
                 this.userRole = userDoc.data().role || 'viewer';
                 console.log('[AUTH] User role loaded:', this.userRole);
             } else {
                 console.log('[AUTH] User document does not exist, creating new user');
                 // Create new user with default role
-                await window.db.collection('users').doc(this.currentUser.uid).set({
+                await db.collection('users').doc(this.currentUser.uid).set({
                     email: this.currentUser.email,
                     role: 'viewer',
                     createdAt: new Date()
@@ -197,7 +160,7 @@ const AuthService = {
         }
 
         try {
-            await window.db.collection('users').doc(userId).update({
+            await db.collection('users').doc(userId).update({
                 role: newRole,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                 updatedBy: this.currentUser.uid
