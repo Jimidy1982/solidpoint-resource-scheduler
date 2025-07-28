@@ -12,8 +12,31 @@ const AuthService = {
     init() {
         console.log('[AUTH] AuthService.init() called');
         
+        // Wait for Firebase to be ready
+        this.waitForFirebase();
+    },
+
+    /**
+     * Wait for Firebase to be available
+     */
+    waitForFirebase() {
+        if (typeof window.auth !== 'undefined' && typeof window.db !== 'undefined') {
+            console.log('[AUTH] Firebase is ready, initializing auth...');
+            this.initializeAuth();
+        } else {
+            console.log('[AUTH] Firebase not ready yet, waiting...');
+            setTimeout(() => this.waitForFirebase(), 100);
+        }
+    },
+
+    /**
+     * Initialize authentication once Firebase is ready
+     */
+    initializeAuth() {
+        console.log('[AUTH] Initializing authentication...');
+        
         // Listen for auth state changes
-        auth.onAuthStateChanged((user) => {
+        window.auth.onAuthStateChanged((user) => {
             console.log('[AUTH] Auth state changed:', user ? 'User logged in' : 'No user');
             console.log('[AUTH] User details:', user);
             
@@ -34,7 +57,7 @@ const AuthService = {
      */
     async signUp(email, password, displayName) {
         try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const userCredential = await window.auth.createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
             
             // Update display name
@@ -43,7 +66,7 @@ const AuthService = {
             });
 
             // Create user document in Firestore
-            await db.collection('users').doc(user.uid).set({
+            await window.db.collection('users').doc(user.uid).set({
                 email: email,
                 displayName: displayName,
                 role: 'viewer', // Default role
@@ -64,9 +87,9 @@ const AuthService = {
     async signIn(email, password) {
         try {
             console.log('AuthService.signIn called with email:', email);
-            console.log('Firebase auth object:', auth);
+            console.log('Firebase auth object:', window.auth);
             
-            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const userCredential = await window.auth.signInWithEmailAndPassword(email, password);
             console.log('Sign in successful, user:', userCredential.user);
             return { success: true, user: userCredential.user };
         } catch (error) {
@@ -80,7 +103,7 @@ const AuthService = {
      */
     async signOut() {
         try {
-            await auth.signOut();
+            await window.auth.signOut();
             return { success: true };
         } catch (error) {
             console.error('Sign out error:', error);
@@ -100,14 +123,14 @@ const AuthService = {
 
         try {
             console.log('[AUTH] Loading user role for:', this.currentUser.uid);
-            const userDoc = await db.collection('users').doc(this.currentUser.uid).get();
+            const userDoc = await window.db.collection('users').doc(this.currentUser.uid).get();
             if (userDoc.exists) {
                 this.userRole = userDoc.data().role || 'viewer';
                 console.log('[AUTH] User role loaded:', this.userRole);
             } else {
                 console.log('[AUTH] User document does not exist, creating new user');
                 // Create new user with default role
-                await db.collection('users').doc(this.currentUser.uid).set({
+                await window.db.collection('users').doc(this.currentUser.uid).set({
                     email: this.currentUser.email,
                     role: 'viewer',
                     createdAt: new Date()
@@ -160,7 +183,7 @@ const AuthService = {
         }
 
         try {
-            await db.collection('users').doc(userId).update({
+            await window.db.collection('users').doc(userId).update({
                 role: newRole,
                 updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                 updatedBy: this.currentUser.uid
