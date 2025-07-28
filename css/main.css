@@ -1,0 +1,560 @@
+:root {
+    --sp-purple: #6c3fc5;
+    --sp-dark: #23213a;
+    --sp-light: #f5f4fa;
+    --sp-accent: #e0d7f7;
+    --sp-border: #dedbe8;
+    --sp-text: #23213a;
+    --sp-bg: #fff;
+    --sp-project: #b39ddb;
+    --sp-danger: #e57373;
+    --sp-weekend: #ffeaea;
+    --sp-group-divider: #e0d7f7;
+}
+
+/* Login Form Styles */
+.login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    color: #333;
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+.login-header p {
+    color: #666;
+    margin: 0;
+}
+
+.login-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #667eea;
+    border-bottom: 2px solid #667eea;
+    margin-bottom: -2px;
+}
+
+.login-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #5a6fd8;
+}
+
+.error-message {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* User Info Styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+/* User Menu Container */
+.user-menu-container {
+    position: relative;
+}
+
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-trigger:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.user-menu-trigger span {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.user-menu-arrow {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.user-menu-container.open .user-menu-arrow {
+    transform: rotate(180deg);
+}
+
+/* User Menu Dropdown */
+.user-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.user-menu-container.open .user-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* User Menu Header */
+.user-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.user-email {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.user-role-display {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+/* User Menu Actions */
+.user-menu-actions {
+    padding: 8px 0;
+}
+
+.user-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: #374151;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: left;
+}
+
+.user-menu-btn:hover {
+    background: #f9fafb;
+}
+
+.menu-icon {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.user-menu-divider {
+    height: 1px;
+    background: #f3f4f6;
+    margin: 8px 0;
+}
+
+/* Sign Out Button in Menu */
+.user-menu-signout {
+    margin: 8px 16px 16px 16px;
+    width: calc(100% - 32px);
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.user-menu-signout:hover {
+    background: #c0392b;
+}
+
+/* Legacy styles for backward compatibility */
+.user-info span {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+#userRole {
+    background: #667eea;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.sign-out-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+.sign-out-btn:hover {
+    background: #c0392b;
+}
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: var(--sp-light);
+    color: var(--sp-text);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: var(--sp-purple);
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 16px;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.toolbar {
+    background: var(--sp-bg);
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--sp-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-range-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sp-accent);
+    border: 1px solid var(--sp-border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    width: 220px;
+    transition: all 0.2s ease;
+}
+
+.date-range-display:hover {
+    background: #f0ebff;
+    border-color: var(--sp-purple);
+}
+
+.date-range-text {
+    font-weight: 600;
+    color: var(--sp-purple);
+    font-size: 0.95em;
+    flex: 1;
+    text-align: center;
+}
+
+.date-range-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.date-action-btn {
+    background: none;
+    border: none;
+    color: var(--sp-purple);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.date-action-btn:hover {
+    background: var(--sp-purple);
+    color: white;
+}
+
+.nav-button {
+    background: var(--sp-accent);
+    border: 1px solid var(--sp-border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.nav-button:hover {
+    background: var(--sp-purple);
+    color: #fff;
+}
+
+
+
+.toolbar button, .toolbar select {
+    font-family: inherit;
+    font-size: 1em;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--sp-border);
+    background: var(--sp-accent);
+    color: var(--sp-text);
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.toolbar button:hover, .toolbar select:focus {
+    background: var(--sp-purple);
+    color: #fff;
+    outline: none;
+}
+
+.add-project-toolbar-btn {
+    background: var(--sp-purple);
+    color: #fff;
+    border: none;
+    margin-right: 8px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-project-toolbar-btn:hover {
+    background: #4b2a8a;
+}
+
+.day-off-btn {
+    background: #4ecdc4;
+    color: #fff;
+    border: none;
+    margin-right: 8px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.day-off-btn:hover {
+    background: #3db8b0;
+}
+
+/* Group Projects Button */
+.group-projects-btn {
+    margin-left: 10px;
+    color: #6c3fc5;
+    font-size: 0.9em;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.group-projects-btn:hover {
+    background-color: rgba(108, 63, 197, 0.1);
+    color: #4b2a8a;
+}
+
+.group-projects-btn:active {
+    background-color: rgba(108, 63, 197, 0.2);
+}
+
+.group-projects-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background-color: transparent;
+}
+
+.container {
+    display: flex;
+    height: calc(100vh - 90px);
+    min-height: 500px;
+}
+
+.sidebar {
+    width: 320px;
+    background: #fff;
+    border: 1px solid #dedbe8;
+    border-radius: 8px;
+    padding: 16px;
+    min-width: 180px;
+    transition: box-shadow 0.2s;
+}
+
+.timeline-area {
+    flex: 1;
+    overflow: auto;
+    background: var(--sp-light);
+    padding: 0;
+    position: relative;
+}
+
+@media (max-width: 900px) {
+    .sidebar { width: 120px; padding: 6px; }
+    .timeline-table { min-width: 600px; }
+    .project-details { min-width: 180px; }
+}
+
+@media (max-width: 600px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; min-width: 0; border-radius: 0; }
+    .timeline-area { min-width: 0; }
+}
+
+ 

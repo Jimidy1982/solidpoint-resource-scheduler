@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SolidPoint Resource Organiser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginForm" class="login-container" style="display: block;">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="assets/images/SolidPointLogoPurpleText.png" alt="SolidPoint Logo" class="logo" onerror="this.style.display='none'">
+                <h2>SolidPoint Resource Organiser</h2>
+                <p>Sign in to access your resource schedule</p>
+            </div>
+            
+            <div class="login-tabs">
+                <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+            
+            <!-- Sign In Form -->
+            <form id="signinForm" class="login-form">
+                <div class="form-group">
+                    <label for="signinEmail">Email</label>
+                    <input type="email" id="signinEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signinPassword">Password</label>
+                    <input type="password" id="signinPassword" required>
+                </div>
+                <button type="submit" class="login-btn">Sign In</button>
+                <div id="signinError" class="error-message"></div>
+            </form>
+            
+            <!-- Sign Up Form -->
+            <form id="signupForm" class="login-form" style="display: none;">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required minlength="6">
+                </div>
+                <button type="submit" class="login-btn">Sign Up</button>
+                <div id="signupError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Content -->
+    <div id="mainApp" style="display: none;">
+        <header>
+            <h1>SolidPoint Resource Organiser</h1>
+            <div class="user-info">
+                <div class="user-menu-container">
+                    <div class="user-menu-trigger" id="userMenuTrigger">
+                        <span id="userDisplayName"></span>
+                        <span id="userRole"></span>
+                        <span class="user-menu-arrow">&#9662;</span>
+                    </div>
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-menu-header">
+                            <div class="user-avatar">
+                                <span id="userInitials"></span>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name" id="userFullName"></div>
+                                <div class="user-email" id="userEmail"></div>
+                                <div class="user-role-display" id="userRoleDisplay"></div>
+                            </div>
+                        </div>
+                        <div class="user-menu-divider"></div>
+                        <div class="user-menu-actions">
+                            <button class="user-menu-btn" id="profileBtn">
+                                <span class="menu-icon">👤</span>
+                                Profile Settings
+                            </button>
+                            <button class="user-menu-btn" id="themeBtn">
+                                <span class="menu-icon">🎨</span>
+                                Theme Settings
+                            </button>
+                            <button class="user-menu-btn" id="helpBtn">
+                                <span class="menu-icon">❓</span>
+                                Help & Support
+                            </button>
+                            <button class="user-menu-btn" id="aboutBtn">
+                                <span class="menu-icon">ℹ️</span>
+                                About
+                            </button>
+                        </div>
+                        <div class="user-menu-divider"></div>
+                        <button id="signOutBtn" class="sign-out-btn user-menu-signout">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+    <div class="toolbar" role="toolbar" aria-label="Main toolbar">
+        <div class="nav-buttons">
+            <button class="nav-button" id="prevBtn" title="Previous period (←)">&larr;</button>
+            <div class="date-range-display" id="dateRangeDisplay">
+                <span class="date-range-text" id="dateRangeText">Loading...</span>
+                <div class="date-range-actions">
+                    <button class="date-action-btn" id="todayBtn" title="Go to today">Today</button>
+                </div>
+            </div>
+            <button class="nav-button" id="nextBtn" title="Next period (→)">&rarr;</button>
+            <select id="viewMode">
+                <option value="week">Week</option>
+                <option value="2week">2 Weeks</option>
+                <option value="month">Month</option>
+            </select>
+        </div>
+
+        <button class="add-project-toolbar-btn" id="addProjectBtn">+ Add Project</button>
+        <button class="day-off-btn" id="addDayOffBtn" title="Add a day off (holiday, weekend, etc.)">Day Off</button>
+        <button id="exportBtn">Export to CSV</button>
+        <button id="dataCleanupBtn" title="Manage data and improve performance">&#128465; Data Cleanup</button>
+        <span style="margin-left:auto;color:#888;font-size:0.95em;">All changes saved automatically</span>
+        <button id="groupProjectsBtn" class="group-projects-btn" title="Click to select projects, Ctrl+Click for multiple selection">&#128230; Group Projects</button>
+    </div>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar" tabindex="0" aria-label="Groups and Resources">
+            <button class="add-btn" id="addGroupBtn" title="Add a new group" aria-label="Add Group">+ Add Group</button>
+            <ul id="groups"></ul>
+        </aside>
+        <main class="timeline-area" id="timelineArea"></main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
+
+    <!-- Load utilities first -->
+    <script src="js/utils/dateUtils.js"></script>
+    <script src="js/utils/domUtils.js"></script>
+
+    <!-- Load services -->
+    <script src="js/services/StorageService.js"></script>
+    <script src="js/services/CloudStorageService.js"></script>
+    <script src="js/services/AuthService.js"></script>
+    <script src="js/services/ProjectService.js"></script>
+    <script src="js/services/ProjectGroupService.js"></script>
+
+    <!-- Load components -->
+    <script src="js/components/ProjectDetails.js"></script>
+    <script src="js/components/Timeline.js"></script>
+    <script src="js/components/GroupManager.js"></script>
+    <script src="js/components/DataCleanup.js"></script>
+
+    <!-- Load authentication -->
+    <script src="js/auth.js"></script>
+
+    <!-- Load main application -->
+    <script src="js/app.js"></script>
+</body>
+</html> 

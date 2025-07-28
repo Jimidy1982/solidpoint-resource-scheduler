@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .step {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .code {
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Firebase Setup for SolidPoint Resource Scheduler</h1>
+    
+    <div class="step">
+        <h2>Step 1: Create Firebase Project</h2>
+        <ol>
+            <li>Go to <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></li>
+            <li>Click "Create a project"</li>
+            <li>Enter project name: <strong>solidpoint-scheduler</strong></li>
+            <li>Click "Continue"</li>
+            <li>Disable Google Analytics (optional)</li>
+            <li>Click "Create project"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Step 2: Enable Authentication</h2>
+        <ol>
+            <li>In Firebase Console, click "Authentication" in the left sidebar</li>
+            <li>Click "Get started"</li>
+            <li>Click "Email/Password" under "Sign-in method"</li>
+            <li>Enable "Email/Password"</li>
+            <li>Click "Save"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Step 3: Create Firestore Database</h2>
+        <ol>
+            <li>In Firebase Console, click "Firestore Database" in the left sidebar</li>
+            <li>Click "Create database"</li>
+            <li>Choose "Start in test mode" (we'll add security rules later)</li>
+            <li>Choose location: <strong>europe-west1</strong> (or closest to you)</li>
+            <li>Click "Done"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Step 4: Get Firebase Config</h2>
+        <ol>
+            <li>In Firebase Console, click the gear icon (⚙️) next to "Project Overview"</li>
+            <li>Click "Project settings"</li>
+            <li>Scroll down to "Your apps" section</li>
+            <li>Click the web icon (</>)</li>
+            <li>Enter app nickname: <strong>solidpoint-scheduler-web</strong></li>
+            <li>Click "Register app"</li>
+            <li><strong>Copy the firebaseConfig object</strong></li>
+        </ol>
+        
+        <div class="highlight">
+            <strong>Your config will look like this:</strong>
+        </div>
+        <div class="code" id="configExample">
+const firebaseConfig = {
+    apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    authDomain: "solidpoint-scheduler.firebaseapp.com",
+    projectId: "solidpoint-scheduler",
+    storageBucket: "solidpoint-scheduler.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef1234567890"
+};
+        </div>
+        
+        <button onclick="copyConfig()">Copy Config Template</button>
+    </div>
+
+    <div class="step">
+        <h2>Step 5: Create Admin User</h2>
+        <ol>
+            <li>In Firebase Console, go to "Authentication" → "Users"</li>
+            <li>Click "Add user"</li>
+            <li>Email: <strong>j.pegg@solidpoint.co.uk</strong></li>
+            <li>Password: <strong>L@nnibob123</strong></li>
+            <li>Click "Add user"</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>Step 6: Update Your App</h2>
+        <ol>
+            <li>Replace the placeholder config in <code>firebase-config.js</code> with your actual config</li>
+            <li>Test the app at: <a href="https://Jimidy1982.github.io/solidpoint-resource-scheduler" target="_blank">https://Jimidy1982.github.io/solidpoint-resource-scheduler</a></li>
+            <li>Try signing in with your credentials</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <h3>🎉 Once you complete these steps:</h3>
+        <ul>
+            <li>Your app will have user authentication</li>
+            <li>Data will be stored in the cloud (Firestore)</li>
+            <li>Multiple users can access the same data</li>
+            <li>Real-time updates will work</li>
+        </ul>
+    </div>
+
+    <script>
+        function copyConfig() {
+            const configText = document.getElementById('configExample').textContent;
+            navigator.clipboard.writeText(configText).then(() => {
+                alert('Config template copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html> 
